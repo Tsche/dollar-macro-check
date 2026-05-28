@@ -49,15 +49,19 @@ config.substitutions.append(("%python", python_exec))
 test_root = Path(config.test_source_root).resolve()
 
 llvm_path = Path(os.environ.get("DOLLAR_MACRO_LLVM_PATH", str(test_root.parent / "llvm-project"))).resolve()
-llvm_install = (llvm_path / "install").resolve()
+plugin_install = test_root.parent / "install"
 
+clang_tidy_bin = Path(os.environ.get("DOLLAR_MACRO_CLANG_TIDY_BIN", str(llvm_path / "install" / "bin"))).resolve()
+if not (clang_tidy_bin / "clang-tidy").exists():
+    clang_tidy_bin = (llvm_path / "build" / "bin").resolve()
 check_clang_tidy = (llvm_path / "clang-tools-extra" / "test" / "clang-tidy" / "check_clang_tidy.py").resolve()
-config.substitutions.append(
-    ("%check_clang_tidy", "%s %s" % (python_exec, check_clang_tidy))
-)
 
-# Add clang-tidy to PATH
-clang_tidy_bin = Path(os.environ.get("DOLLAR_MACRO_CLANG_TIDY_BIN", str(llvm_install / "bin"))).resolve()
+path = str(clang_tidy_bin) + os.pathsep + config.environment.get("PATH", "")
 if clang_tidy_bin.exists():
     config.environment["PATH"] = str(clang_tidy_bin) + os.pathsep + config.environment.get("PATH", "")
+
+config.substitutions.append(
+    ("%check_clang_tidy", 
+        f"{python_exec} {check_clang_tidy} --load={plugin_install / 'lib' / 'dollar_macros.so'}")
+)
 

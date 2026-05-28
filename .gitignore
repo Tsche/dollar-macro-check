@@ -3,3 +3,4 @@ llvm-project/
 **/__pycache__
 **/.mypy_cache
 install/
+build/

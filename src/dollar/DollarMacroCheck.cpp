@@ -1,15 +1,14 @@
 #include "DollarMacroCheck.h"
-#include "clang/Basic/Diagnostic.h"
-#include "clang/Basic/DiagnosticIDs.h"
-#include "clang/Basic/IdentifierTable.h"
-#include "clang/Lex/MacroInfo.h"
-#include "clang/Lex/PPCallbacks.h"
-#include "clang/Lex/Preprocessor.h"
-#include "llvm/ADT/STLExtras.h"
-#include "llvm/ADT/StringRef.h"
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/DiagnosticIDs.h>
+#include <clang/Basic/IdentifierTable.h>
+#include <clang/Lex/MacroInfo.h>
+#include <clang/Lex/PPCallbacks.h>
+#include <clang/Lex/Preprocessor.h>
+#include <llvm/ADT/STLExtras.h>
+#include <llvm/ADT/StringRef.h>
 
 namespace clang::tidy::dollar {
-namespace {
 
 class MacroDollarIdentPPCallbacks : public PPCallbacks {
 public:
@@ -68,7 +67,6 @@ private:
     });
   }
 };
-} // namespace
 
 void DollarMacroCheck::registerPPCallbacks(const SourceManager &SM,
                                            Preprocessor *PP,

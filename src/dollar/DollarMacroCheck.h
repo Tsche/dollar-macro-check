@@ -1,5 +1,5 @@
 #pragma once
-#include "../ClangTidyCheck.h"
+#include <clang-tidy/ClangTidyCheck.h>
 
 namespace clang::tidy::dollar {
 
