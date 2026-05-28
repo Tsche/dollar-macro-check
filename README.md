@@ -4,6 +4,7 @@
 
 A clang-tidy check that enforces `$macros` to visually separate them from regular identifiers.
 
+With this check enabled, you will get warnings if you try to define a macro without prefixing its name with a `$`. Likewise, you will get a warning if you use a regular identifier that starts with `$`.
 
 ## Build Requirements
 

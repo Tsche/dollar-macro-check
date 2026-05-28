@@ -1,5 +1,6 @@
 #pragma once
 #include <clang-tidy/ClangTidyCheck.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
 
 namespace clang::tidy::dollar {
 
@@ -17,6 +18,8 @@ public:
     return LangOpts.CPlusPlus;
   }
 
+  void registerMatchers(ast_matchers::MatchFinder *Finder) override;
+  void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
   void registerPPCallbacks(const SourceManager &SM, Preprocessor *PP,
                            Preprocessor *ModuleExpanderPP) override;
   void storeOptions(ClangTidyOptions::OptionMap &Options) override;

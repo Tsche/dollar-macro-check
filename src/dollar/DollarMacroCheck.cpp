@@ -5,6 +5,8 @@
 #include <clang/Lex/MacroInfo.h>
 #include <clang/Lex/PPCallbacks.h>
 #include <clang/Lex/Preprocessor.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/ASTMatchers/ASTMatchers.h>
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/ADT/StringRef.h>
 
@@ -77,6 +79,22 @@ void DollarMacroCheck::registerPPCallbacks(const SourceManager &SM,
 
 void DollarMacroCheck::storeOptions(ClangTidyOptions::OptionMap &Options) {
   ClangTidyCheck::storeOptions(Options);
+}
+
+void DollarMacroCheck::registerMatchers(ast_matchers::MatchFinder *Finder) {
+  // Match any named declaration to check for '$' in the name
+  Finder->addMatcher(ast_matchers::namedDecl().bind("decl"), this);
+}
+
+void DollarMacroCheck::check(const ast_matchers::MatchFinder::MatchResult &Result) {
+  if (const auto *Decl = Result.Nodes.getNodeAs<NamedDecl>("decl")) {
+    StringRef Name = Decl->getName();
+    if (Name.starts_with('$')) {
+      diag(Decl->getLocation(),
+           "identifier '%0' starts with '$', which is reserved for macros")
+          << Name;
+    }
+  }
 }
 
 } // namespace clang::tidy::dollar
